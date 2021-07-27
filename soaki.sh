@@ -179,9 +179,13 @@ function install() {
     arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
     # Install KDE
-    arch-chroot /mnt pacman -Syu --noconfirm --needed plasma plasma-nm noto-fonts noto-fonts-emoji
+    arch-chroot /mnt pacman -Syu --noconfirm --needed plasma plasma-nm konsole dolphin ark okular kate kcalc kcharselect gwenview noto-fonts noto-fonts-emoji
 
+    # Enable SDDM as the default Display Manager
     arch-chroot /mnt systemctl enable sddm.service
+
+    # Configure SDDM to use a sane theme (breeze)
+    configure_sddm
 
     # Install GPU Drivers
     COMMON_VULKAN_PACKAGES="vulkan-icd-loader lib32-vulkan-icd-loader vulkan-tools"
@@ -233,7 +237,6 @@ function check_variables() {
     check_variables_boolean "AMD_GPU" "$AMD_GPU"
     check_variables_boolean "INTEL_GPU" "$INTEL_GPU"
     check_variables_boolean "NVIDIA_GPU" "$NVIDIA_GPU"
-    check_variables_boolean "XORG_INSTALL" "$XORG_INSTALL"
     check_variables_value "PING_HOSTNAME" "$PING_HOSTNAME"
     check_variables_value "HOSTNAME" "$HOSTNAME"
     check_variables_value "TIMEZONE" "$TIMEZONE"
@@ -378,6 +381,31 @@ Description=Update Nvidia module in initcpio
 Depends=mkinitcpio
 When=PostTransaction
 Exec=/usr/bin/mkinitcpio -P
+EOT
+
+}
+
+function configure_sddm() {
+    if [[ ! -d "/mnt/etc/sddm.conf.d" ]]; then
+        mkdir -p /mnt/etc/sddm.conf.d
+    fi
+
+    cat <<EOT > "/mnt/etc/sddm.conf.d/kde_settings.conf"
+[Autologin]
+Relogin=false
+Session=
+User=
+
+[General]
+HaltCommand=/usr/bin/systemctl poweroff
+RebootCommand=/usr/bin/systemctl reboot
+
+[Theme]
+Current=breeze
+
+[Users]
+MaximumUid=60000
+MinimumUid=1000
 EOT
 
 }
