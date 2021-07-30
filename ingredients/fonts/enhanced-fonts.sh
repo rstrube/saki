@@ -36,7 +36,7 @@ cat <<EOT > "fonts.conf"
 
     <!-- by default fontconfig assumes any unrecognized font is sans-serif, so -->
     <!-- the fonts above now have /both/ families.  fix this. -->
-    <!-- note that "delete" applies to the first match -->
+    <!-- note that "delete" applies to the first match deleting the sans-serif family only -->
     <match>
         <test compare="eq" name="family">
             <string>sans-serif</string>
@@ -50,6 +50,9 @@ cat <<EOT > "fonts.conf"
 EOT
 
 mv fonts.conf ~/.config/fontconfig/
+
+# Set the default fixed with font for KDE to JetBrains Mono 11pt
+kwriteconfig5 --group General --key fixed "JetBrains Mono,11,-1,5,50,0,0,0,0,0"
 
 # Test font coverage for specific unicode characters required by PowerLine
 echo "Testing font coverage..."
