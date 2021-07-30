@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2021-07-27-22:19:48
+# recipe.sh : 2021-07-30-14:49:31
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -37,7 +37,8 @@ function main() {
 # 5. Media
 # --------------------------------------------------------------------------
 #./ingredients/media/codecs.sh #Codecs for Audio, Images, and Video
-#./ingredients/media/phonon-gstreamer.sh #Phonon with GStreamer backend + Plugins
+#./ingredients/media/kde-phonon-gstreamer.sh #KDE Phonon with GStreamer backend + Plugins
+#./ingredients/media/kde-thumbnails.sh #KDE Thumbnail Generation Support
 #./ingredients/media/pulseeffects.sh #PulseEffects + Perfect EQ
 #./ingredients/media/tauon-music-box.sh #Tauon Music Box
 #./ingredients/media/vlc.sh #VLC media player
