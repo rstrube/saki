@@ -1,5 +1,5 @@
 #!/bin/bash
-#|#./ingredients/dev/git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
+#|#./ingredients/dev/0_git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
 
 DIR=$(dirname "$0")
 source $DIR/../_helper/_common-functions.sh

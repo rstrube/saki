@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2021-07-30-14:49:31
+# recipe.sh : 2021-08-27-14:59:46
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -15,9 +15,10 @@ function main() {
 
 # 2. Development
 # --------------------------------------------------------------------------
+#./ingredients/dev/0_git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
 #./ingredients/dev/android.sh #Android development tools (ADB, etc.)
-#./ingredients/dev/git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
-#./ingredients/dev/ms-dotnet.sh #.NET Core SDK and Runtimes
+#./ingredients/dev/dotnet.sh #.NET Core SDK and Runtimes
+#./ingredients/dev/git-credential-manager-core.sh #Git Crendential Manager (.NET Core based)
 #./ingredients/dev/postman.sh #Postman
 #./ingredients/dev/vscode.sh #Visual Studio Code
 #./ingredients/dev/vscode-vim.sh #vim extension for Visual Studio Code [Requires /dev/vscode ingredient]
