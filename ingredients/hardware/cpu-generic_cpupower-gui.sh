@@ -1,5 +1,5 @@
 #!/bin/bash
-#|#./ingredients/cpu/cpupower-gui.sh #GUI utility to set CPU govenor settings
+#|#./ingredients/hardware/cpu-generic_cpupower-gui.sh #GUI utility to set CPU govenor settings
 
 paru -S --noconfirm --needed cpupower-gui
 

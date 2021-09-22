@@ -32,7 +32,7 @@ function generate-recipe() {
     generate-recipe-section "# 4. Productivity" "../ingredients/productivity"
     generate-recipe-section "# 5. Media" "../ingredients/media"
     generate-recipe-section "# 6. Gaming" "../ingredients/gaming"
-    generate-recipe-section "# 7. CPU Utilities" "../ingredients/cpu"
+    generate-recipe-section "# 7. Hardware Related" "../ingredients/hardware"
     generate-recipe-section "# 8. System Monitoring" "../ingredients/system-monitor"
     generate-recipe-section "# 9. VM" "../ingredients/vm"
     generate-recipe-section "# 10. Icons" "../ingredients/icons"
