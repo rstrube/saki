@@ -206,14 +206,14 @@ function install() {
     arch-chroot /mnt pacman -S --noconfirm --needed \
         plasma-desktop                      `# KDE DE` \
         plasma-nm                           `# NetworkManager applet` \
+        kscreen powerdevil                  `# Additional optional dependencies for plasma-desktop package` \
         konsole                             `# Common KDE apps and utilities` \
         dolphin dolphin-plugins ark \
         kdenetwork-filesharing \
         kdegraphics-thumbnailers \
         ffmpegthumbs \
         okular gwenview kwrite kcalc \
-        kcharselect kcolorchooser \
-        print-manager \
+        kcharselect \
         partitionmanager \
         ksystemlog \
         pipewire pipewire-pulse             `# Pipewire and Pipewire drop in replacement for PulseAudio` \
