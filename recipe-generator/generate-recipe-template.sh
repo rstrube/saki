@@ -26,18 +26,20 @@ function generate-recipe() {
     echo "" >> $GENERATED_RECIPE_TEMPLATE_FILE
     echo "function main() {" >> $GENERATED_RECIPE_TEMPLATE_FILE
 
-    generate-recipe-section "# 1. Core" "../ingredients/core"
-    generate-recipe-section "# 2. Development" "../ingredients/dev"
-    generate-recipe-section "# 3. Web" "../ingredients/web"
-    generate-recipe-section "# 4. Productivity" "../ingredients/productivity"
-    generate-recipe-section "# 5. Media" "../ingredients/media"
-    generate-recipe-section "# 6. Gaming" "../ingredients/gaming"
-    generate-recipe-section "# 7. Hardware Related" "../ingredients/hardware"
-    generate-recipe-section "# 8. System Monitoring" "../ingredients/system-monitor"
-    generate-recipe-section "# 9. VM" "../ingredients/vm"
-    generate-recipe-section "# 10. Icons" "../ingredients/icons"
-    generate-recipe-section "# 11. Fonts" "../ingredients/fonts"
-    generate-recipe-section "# 12. Themes" "../ingredients/themes"
+    # generate-recipe-section "# Core" "../ingredients/core"
+    generate-recipe-section "# Shell" "../ingredients/shell"
+    generate-recipe-section "# Filesystem" "../ingredients/fs"
+    generate-recipe-section "# Editors" "../ingredients/editor"
+    generate-recipe-section "# Development" "../ingredients/dev"
+    generate-recipe-section "# Web" "../ingredients/web"
+    generate-recipe-section "# Productivity" "../ingredients/productivity"
+    generate-recipe-section "# Media" "../ingredients/media"
+    generate-recipe-section "# Gaming" "../ingredients/gaming"
+    generate-recipe-section "# Hardware" "../ingredients/hardware"
+    generate-recipe-section "# System Monitoring" "../ingredients/system-monitor"
+    generate-recipe-section "# VM" "../ingredients/vm"
+    generate-recipe-section "# Icons" "../ingredients/icons"
+    generate-recipe-section "# Fonts" "../ingredients/fonts"
 
     echo "" >> $GENERATED_RECIPE_TEMPLATE_FILE
     

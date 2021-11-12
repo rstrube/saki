@@ -1,5 +1,5 @@
 #!/bin/bash
-#|#./ingredients/themes/dracula-vscode.sh #Dracula theme for VSCode [Requires /dev/vscode ingredient]
+#|#./ingredients/dev/vscode-dracula-theme.sh #Dracula theme for VSCode [Requires /dev/1_vscode ingredient]
 
 DIR=$(dirname "$0")
 source $DIR/../dev/_helper/_vscode-functions.sh

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Simple Opinionated Arch KDE Installer
+# Simple Arch KDE Installer
 
 # Configuration
 #################################################
@@ -22,11 +22,15 @@ AMD_GPU="false"
 INTEL_GPU="false"
 NVIDIA_GPU="false"
 
+# Install Xorg and configure KDE to use it by default?
+# If set to "false" KDE will be configured to use Wayland by default
+XORG_INSTALL="false"
+
 # Hostname to ping to check network connection
 PING_HOSTNAME="www.google.com"
 
 # Hostname Configuration
-HOSTNAME="soaki"
+HOSTNAME="saki"
 
 # Locale Configuration
 # To list out all timezones in US run "ls -l /usr/share/zoneinfo/America"
@@ -103,15 +107,25 @@ function install() {
     pacstrap /mnt
 
     # Install essential packages
-    ESSENTIAL_PACKAGES="base-devel linux-zen linux-zen-headers fwupd xdg-user-dirs man-db man-pages texinfo dosfstools exfatprogs e2fsprogs networkmanager git vim"
-    arch-chroot /mnt pacman -Syu --noconfirm --needed $ESSENTIAL_PACKAGES
+    arch-chroot /mnt pacman -Syu --noconfirm --needed \
+        base-devel              `# Core development libraries (gcc, etc.)` \
+        linux linux-headers     `# Linux kernel and headers` \
+        fwupd                   `# Support for updating firmware from Linux Vendor Firmware Service [https://fwupd.org/]` \
+        man-db man-pages        `# man pages` \
+        texinfo                 `# GUN documentation format` \
+        dosfstools exfatprogs   `# Tools and utilities for FAT and exFAT filesystems` \
+        e2fsprogs               `# Tools and utiltiies for ext filesystems` \
+        networkmanager          `# Networkmanager` \
+        git                     `# Git` \
+        vim                     `# Text editor` \
+        reflector               `# Utility to manage pacman mirrors`
 
     # Install additional firmware and uCode
     if [[ "$AMD_CPU" == "true" ]]; then
-        arch-chroot /mnt pacman -Syu --noconfirm --needed linux-firmware amd-ucode
+        arch-chroot /mnt pacman -S --noconfirm --needed linux-firmware amd-ucode
 
     elif [[ "$INTEL_CPU" == "true" ]]; then
-        arch-chroot /mnt pacman -Syu --noconfirm --needed linux-firmware intel-ucode
+        arch-chroot /mnt pacman -S --noconfirm --needed linux-firmware intel-ucode
     fi
 
     # Enable NetworkManager.service
@@ -166,7 +180,7 @@ function install() {
     arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="'"$CMDLINE_LINUX"'"/' /etc/default/grub
 
     # Install and configure Grub as bootloader on ESP
-    arch-chroot /mnt pacman -Syu --noconfirm --needed grub efibootmgr
+    arch-chroot /mnt pacman -S --noconfirm --needed grub efibootmgr
 
     # Note the '--removable' switch will also setup grub on /boot/EFI/BOOT/BOOTX64.EFI (which is the Windows default location)
     # This is neccessary because many BIOSes don't honor efivars correctly
@@ -178,8 +192,52 @@ function install() {
     printf "$USER_PASSWORD\n$USER_PASSWORD" | arch-chroot /mnt passwd $USER_NAME
     arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
+    # Configure reflector
+    echo "--save /etc/pacman.d/mirrorlist" > /mnt/etc/xdg/reflector/reflector.conf
+    echo "--country \"$REFLECTOR_COUNTRY\"" >> /mnt/etc/xdg/reflector/reflector.conf
+    echo "--protocol https" >> /mnt/etc/xdg/reflector/reflector.conf
+    echo "--latest 10" >> /mnt/etc/xdg/reflector/reflector.conf
+    echo "--sort rate" >> /mnt/etc/xdg/reflector/reflector.conf
+
+    # Configure pacman hook for upgrading pacman-mirrorlist package
+    configure_pacman_mirrorupgrade_hook
+
     # Install KDE
-    arch-chroot /mnt pacman -Syu --noconfirm --needed plasma plasma-nm konsole dolphin ark okular kate kcalc kcharselect gwenview noto-fonts noto-fonts-emoji
+    arch-chroot /mnt pacman -S --noconfirm --needed \
+        plasma                              `# KDE DE` \
+        plasma-nm                           `# NetworkManager applet` \
+        konsole                             `# Common KDE apps and utilities` \
+        dolphin dolphin-plugins ark \
+        kdenetwork-filesharing \
+        kdegraphics-thumbnailers \
+        ffmpegthumbs \
+        okular gwenview kwrite kcalc \
+        kcharselect kcolorchooser \
+        print-manager \
+        partitionmanager \
+        ksystemlog \
+        pipewire pipewire-pulse             `# Pipewire and Pipewire drop in replacement for PulseAudio` \
+        xdg-desktop-portal-kde              `# Support for screensharing in pipewire for KDE` \
+        ttf-liberation                      `# Liberation fonts` \
+        noto-fonts noto-fonts-emoji         `# Noto fonts to support emojis` \
+        rust                                `# Rust for paru AUR helper`
+
+    #Note: systemctl enable --user doesn't work via arch-chroot, performing manual creation of symlinks
+    # systemctl enable --user --now pipewire.service
+    # systemctl enable --user --now pipewire-pulse.service
+    arch-chroot -u $USER_NAME /mnt mkdir -p /home/${USER_NAME}/.config/systemd/user/default.target.wants
+    arch-chroot -u $USER_NAME /mnt mkdir -p /home/${USER_NAME}/.config/systemd/user/sockets.target.wants
+
+    arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire.service /home/${USER_NAME}/.config/systemd/user/default.target.wants/pipewire.service
+    arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire.socket /home/${USER_NAME}/.config/systemd/user/sockets.target.wants/pipewire.socket
+
+    arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire-pulse.service /home/${USER_NAME}/.config/systemd/user/default.target.wants/pipewire-pulse.service
+    arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire-pulse.socket /home/${USER_NAME}/.config/systemd/user/sockets.target.wants/pipewire-pulse.socket
+
+    # Wayland installation
+    if [[ "$XORG_INSTALL" == "false" ]]; then
+        arch-chroot /mnt pacman -S --noconfirm --needed plasma-wayland-session
+    fi
 
     # Enable SDDM as the default Display Manager
     arch-chroot /mnt systemctl enable sddm.service
@@ -192,23 +250,28 @@ function install() {
 
     if [[ "$INTEL_GPU" == "true" ]]; then
         # Note: installing newer intel-media-driver (iHD) instead of libva-intel-driver (i965)
-        arch-chroot /mnt pacman -Syu --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver libva-utils
+        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver libva-utils
     fi
 
     if [[ "$AMD_GPU" == "true" ]]; then
-        arch-chroot /mnt pacman -Syu --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver libva-utils
+        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver libva-utils
     fi
     
     if [[ "$NVIDIA_GPU" == "true" ]]; then
-        arch-chroot /mnt pacman -Syu --noconfirm --needed $COMMON_VULKAN_PACKAGES nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings
+        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings
 
         # Configure pacman to rebuild the initramfs each time the nvidia package is updated
         configure_pacman_nvidia_hook
     fi
 
-    # Clone soaki git repo so that user can run post-install recipe
-    arch-chroot /mnt git clone https://github.com/rstrube/soaki /home/${USER_NAME}/soaki
-    arch-chroot /mnt chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/soaki
+    # Install AUR helper
+    install_aur_helper
+
+    # Install AUR packages
+    # exec_aur "paru -S --noconfirm --needed xxx"
+
+    # Clone sagi git repo so that user can run post-install recipe
+    arch-chroot -u $USER_NAME /mnt git clone https://github.com/rstrube/sagi.git /home/${USER_NAME}/sagi
     
     echo -e "${LIGHT_BLUE}Installation has completed! Run 'reboot' to reboot your machine.${NC}"
 }
@@ -222,7 +285,7 @@ function check_critical_prereqs() {
     fi
 
     if [[ ! -d /sys/firmware/efi ]]; then
-        echo -e "${RED}Error: soaki can only be run on UEFI systems.${NC}"
+        echo -e "${RED}Error: can only be run on UEFI systems.${NC}"
         echo "If running in a VM, make sure the VM is configured to use UEFI instead of BIOS."
         exit 1
     fi
@@ -249,7 +312,7 @@ function check_variables() {
     check_variables_value "USER_PASSWORD" "$USER_PASSWORD"
 }
 
-ERROR_VARS_MESSAGE="${RED}Error: you must edit soaki.sh (e.g. with vim) and configure the required variables.${NC}"
+ERROR_VARS_MESSAGE="${RED}Error: you must edit saki.sh (e.g. with vim) and configure the required variables.${NC}"
 
 function check_variables_value() {
     NAME=$1
@@ -312,7 +375,7 @@ function check_network() {
 function confirm_install() {
     clear
 
-    echo -e "${LBLUE}Soaki (Simple Opinionated Arch KDE Installer)${NC}"
+    echo -e "${LBLUE}Saki (Simple Arch KDE Installer)${NC}"
     echo ""
     echo -e "${RED}Warning"'!'"${NC}"
     echo -e "${RED}This script will destroy all data on ${HD_DEVICE}${NC}"
@@ -361,6 +424,38 @@ function confirm_install() {
             exit
             ;;
     esac
+}
+
+function install_aur_helper() {
+    COMMAND="rm -rf /home/$USER_NAME/.paru-makepkg && mkdir -p /home/$USER_NAME/.paru-makepkg && cd /home/$USER_NAME/.paru-makepkg && git clone https://aur.archlinux.org/paru.git && (cd paru && makepkg -si --noconfirm) && rm -rf /home/$USER_NAME/.paru-makepkg"
+    exec_aur "$COMMAND"
+}
+
+function exec_aur() {
+    COMMAND="$1"
+    arch-chroot /mnt sed -i 's/^%wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+    arch-chroot /mnt bash -c "echo -e \"$USER_PASSWORD\n$USER_PASSWORD\n$USER_PASSWORD\n$USER_PASSWORD\n\" | su $USER_NAME -s /usr/bin/bash -c \"$COMMAND\""
+    arch-chroot /mnt sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers
+}
+
+function configure_pacman_mirrorupgrade_hook() {	
+    if [[ ! -d "/mnt/etc/pacman.d/hooks" ]]; then	
+        mkdir -p /mnt/etc/pacman.d/hooks	
+    fi	
+
+    cat <<EOT > "/mnt/etc/pacman.d/hooks/mirrorupgrade.hook"	
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = pacman-mirrorlist
+
+[Action]
+Description = Updating pacman-mirrorlist with reflector and removing pacnew...
+When = PostTransaction
+Depends = reflector
+Exec = /bin/sh -c 'systemctl start reflector.service; [ -f /etc/pacman.d/mirrorlist.pacnew ] && rm /etc/pacman.d/mirrorlist.pacnew'
+EOT
+
 }
 
 function configure_pacman_nvidia_hook() {
