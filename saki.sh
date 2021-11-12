@@ -204,7 +204,7 @@ function install() {
 
     # Install KDE
     arch-chroot /mnt pacman -S --noconfirm --needed \
-        plasma                              `# KDE DE` \
+        plasma-desktop                      `# KDE DE` \
         plasma-nm                           `# NetworkManager applet` \
         konsole                             `# Common KDE apps and utilities` \
         dolphin dolphin-plugins ark \
