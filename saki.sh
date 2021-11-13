@@ -269,8 +269,8 @@ function install() {
     # Install AUR packages
     # exec_aur "paru -S --noconfirm --needed xxx"
 
-    # Clone sagi git repo so that user can run post-install recipe
-    arch-chroot -u $USER_NAME /mnt git clone https://github.com/rstrube/sagi.git /home/${USER_NAME}/sagi
+    # Clone saki git repo so that user can run post-install recipe
+    arch-chroot -u $USER_NAME /mnt git clone https://github.com/rstrube/saki.git /home/${USER_NAME}/saki
     
     echo -e "${LIGHT_BLUE}Installation has completed! Run 'reboot' to reboot your machine.${NC}"
 }
