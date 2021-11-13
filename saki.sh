@@ -205,9 +205,10 @@ function install() {
     # Install KDE
     arch-chroot /mnt pacman -S --noconfirm --needed \
         plasma-desktop                      `# KDE DE` \
+        sddm                                `# SDDM Display Manager` \
         plasma-nm                           `# NetworkManager applet` \
         kscreen powerdevil                  `# Additional optional dependencies for plasma-desktop package` \
-        konsole                             `# Common KDE apps and utilities` \
+        konsole kwalletmanager              `# Common KDE apps and utilities` \
         dolphin dolphin-plugins ark \
         kdenetwork-filesharing \
         kdegraphics-thumbnailers \
@@ -485,24 +486,8 @@ function configure_sddm() {
         mkdir -p /mnt/etc/sddm.conf.d
     fi
 
-    cat <<EOT > "/mnt/etc/sddm.conf.d/kde_settings.conf"
-[Autologin]
-Relogin=false
-Session=
-User=
-
-[General]
-HaltCommand=/usr/bin/systemctl poweroff
-RebootCommand=/usr/bin/systemctl reboot
-
-[Theme]
-Current=breeze
-
-[Users]
-MaximumUid=60000
-MinimumUid=1000
-EOT
-
+    cp /mnt/usr/lib/sddm/sddm.conf.d/default.conf /mnt/etc/sddm.conf.d/
+    sed -i '$!N;s/# Current theme name\nCurrent=/# Current theme name\nCurrent=Breeze/;P;D' /mnt/etc/sddm.conf.d/default.conf
 }
 
 # Console Colors
