@@ -216,7 +216,8 @@ function install() {
         partitionmanager \
         ksystemlog \
         pipewire pipewire-pulse             `# Pipewire and Pipewire drop in replacement for PulseAudio` \
-        xdg-desktop-portal-kde              `# Support for screensharing in pipewire for KDE` \
+        xdg-desktop-portal                  `# Support for screensharing in pipewire for KDE` \
+        xdg-desktop-portal-kde \
         ttf-liberation                      `# Liberation fonts` \
         noto-fonts noto-fonts-emoji         `# Noto fonts to support emojis` \
         rust                                `# Rust for paru AUR helper`
