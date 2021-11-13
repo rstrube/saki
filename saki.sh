@@ -489,7 +489,7 @@ function configure_sddm() {
     fi
 
     cp /mnt/usr/lib/sddm/sddm.conf.d/default.conf /mnt/etc/sddm.conf.d/
-    sed -i '$!N;s/# Current theme name\nCurrent=/# Current theme name\nCurrent=Breeze/;P;D' /mnt/etc/sddm.conf.d/default.conf
+    sed -i '$!N;s/# Current theme name\nCurrent=/# Current theme name\nCurrent=breeze/;P;D' /mnt/etc/sddm.conf.d/default.conf
 }
 
 # Console Colors
