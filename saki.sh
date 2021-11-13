@@ -204,10 +204,8 @@ function install() {
 
     # Install KDE
     arch-chroot /mnt pacman -S --noconfirm --needed \
-        plasma-desktop                      `# KDE DE` \
-        sddm                                `# SDDM Display Manager` \
+        plasma                              `# KDE DE` \
         plasma-nm                           `# NetworkManager applet` \
-        kscreen powerdevil                  `# Additional optional dependencies for plasma-desktop package` \
         konsole kwalletmanager              `# Common KDE apps and utilities` \
         dolphin dolphin-plugins ark \
         kdenetwork-filesharing \
@@ -397,6 +395,10 @@ function confirm_install() {
     print_variables_boolean "AMD_GPU" "$AMD_GPU"
     print_variables_boolean "INTEL_GPU" "$INTEL_GPU"
     print_variables_boolean "NVIDIA_GPU" "$NVIDIA_GPU"
+    echo ""
+
+    echo -e "${LBLUE}DE Configuration:${NC}"
+    print_variables_boolean "XORG_INSTALL" "$XORG_INSTALL"
     echo ""
 
     echo -e "${LBLUE}Host Configuration:${NC}"
