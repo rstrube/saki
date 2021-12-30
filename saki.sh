@@ -268,7 +268,7 @@ function install() {
     install_aur_helper
 
     # Install AUR packages
-    # exec_aur "paru -S --noconfirm --needed xxx"
+    # exec_as_user "paru -S --noconfirm --needed xxx"
 
     # Clone saki git repo so that user can run post-install recipe
     arch-chroot -u $USER_NAME /mnt git clone https://github.com/rstrube/saki.git /home/${USER_NAME}/saki
@@ -432,10 +432,10 @@ function confirm_install() {
 
 function install_aur_helper() {
     COMMAND="rm -rf /home/$USER_NAME/.paru-makepkg && mkdir -p /home/$USER_NAME/.paru-makepkg && cd /home/$USER_NAME/.paru-makepkg && git clone https://aur.archlinux.org/paru.git && (cd paru && makepkg -si --noconfirm) && rm -rf /home/$USER_NAME/.paru-makepkg"
-    exec_aur "$COMMAND"
+    exec_as_user "$COMMAND"
 }
 
-function exec_aur() {
+function exec_as_user() {
     COMMAND="$1"
     arch-chroot /mnt sed -i 's/^%wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
     arch-chroot /mnt bash -c "echo -e \"$USER_PASSWORD\n$USER_PASSWORD\n$USER_PASSWORD\n$USER_PASSWORD\n\" | su $USER_NAME -s /usr/bin/bash -c \"$COMMAND\""
