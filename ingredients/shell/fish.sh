@@ -28,8 +28,8 @@ alias grep="grep --color"
 alias pacman_remove_orphans="paru -c"
 EOT
 
-    mkdir -p ~/.config/fish
-    cp aliases.fish ~/.config/fish/
+    mkdir -p ~/.config/fish/conf.d
+    cp aliases.fish ~/.config/fish/conf.d/.
     rm aliases.fish
 }
 
@@ -67,7 +67,7 @@ set -g fish_pager_color_prefix        'white' '--bold' '--underline'
 set -g fish_pager_color_progress      'brblack' '--background=cyan'
 EOT
 
-    cp reset-colors.fish ~/.config/fish/
+    cp reset-colors.fish ~/.config/fish/conf.d/.
     rm reset-colors.fish
 }
 
@@ -77,11 +77,6 @@ function configure_fish() {
 # Don't shorten the working directory in the prompt
 set -g fish_prompt_pwd_dir_length 0
 
-# Aliases
-source ~/.config/fish/aliases.fish
-
-# Reset Colors
-source ~/.config/fish/reset-colors.fish
 EOT
 
     cp config.fish ~/.config/fish/
