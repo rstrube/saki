@@ -260,8 +260,8 @@ function install() {
     fi
 
     if [[ "$AMD_GPU" == "true" ]]; then
-        # AMDGPU supports both VA-API and VDPAU
-        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver libva-utils mesa-vdpau lib32-mesa-vdpau vdpauinfo
+        # AMDGPU supports both VA-API and VDPAU, but we're only installing support for VA-API
+        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver libva-utils
     fi
     
     if [[ "$NVIDIA_GPU" == "true" ]]; then
