@@ -206,7 +206,8 @@ function install() {
     arch-chroot /mnt pacman -S --noconfirm --needed \
         plasma                              `# KDE DE` \
         plasma-nm                           `# NetworkManager applet` \
-        konsole kwalletmanager              `# Common KDE apps and utilities` \
+        kwallet kwallet-pam kwalletmanager  `# KWallet subsystem` \
+        konsole                             `# Common KDE apps and utilities` \
         dolphin dolphin-plugins ark \
         kdenetwork-filesharing \
         kdegraphics-thumbnailers \
