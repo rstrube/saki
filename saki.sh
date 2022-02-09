@@ -252,11 +252,13 @@ function install() {
 
     if [[ "$INTEL_GPU" == "true" ]]; then
         # Note: installing newer intel-media-driver (iHD) instead of libva-intel-driver (i965)
+        # Intel drivers only supports VA-API
         arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver libva-utils
     fi
 
     if [[ "$AMD_GPU" == "true" ]]; then
-        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver libva-utils
+        # AMDGPU supports both VA-API and VDPAU
+        arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver libva-utils mesa-vdpau lib32-mesa-vdpau vdpauinfo
     fi
     
     if [[ "$NVIDIA_GPU" == "true" ]]; then
