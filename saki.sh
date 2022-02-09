@@ -216,6 +216,7 @@ function install() {
         partitionmanager \
         ksystemlog \
         pipewire pipewire-pulse             `# Pipewire and Pipewire drop in replacement for PulseAudio` \
+        pipewire-jack                       `# Pipewire JACK support` \
         xdg-desktop-portal                  `# Support for screensharing in pipewire for KDE` \
         xdg-desktop-portal-kde \
         ttf-liberation                      `# Liberation fonts` \
@@ -449,15 +450,15 @@ function configure_pacman_mirrorupgrade_hook() {
 
     cat <<EOT > "/mnt/etc/pacman.d/hooks/mirrorupgrade.hook"	
 [Trigger]
-Operation = Upgrade
-Type = Package
-Target = pacman-mirrorlist
+Operation=Upgrade
+Type=Package
+Target=pacman-mirrorlist
 
 [Action]
-Description = Updating pacman-mirrorlist with reflector and removing pacnew...
-When = PostTransaction
-Depends = reflector
-Exec = /bin/sh -c 'systemctl start reflector.service; [ -f /etc/pacman.d/mirrorlist.pacnew ] && rm /etc/pacman.d/mirrorlist.pacnew'
+Description=Updating pacman-mirrorlist with reflector and removing pacnew...
+When=PostTransaction
+Depends=reflector
+Exec=/bin/sh -c 'systemctl start reflector.service; [ -f /etc/pacman.d/mirrorlist.pacnew ] && rm /etc/pacman.d/mirrorlist.pacnew'
 EOT
 
 }
