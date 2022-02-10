@@ -2,8 +2,7 @@
 #|#./ingredients/web/google-chrome-wayland.sh #Native Wayland Support for Google Chrome [Requires /web/google-chrome ingredient]
 
 cat <<EOT > "chrome-flags.conf"	
---enable-features=UseOzonePlatform
---ozone-platform=wayland
+--ozone-platform-hint=auto
 EOT
 
 cp chrome-flags.conf ~/.config/
