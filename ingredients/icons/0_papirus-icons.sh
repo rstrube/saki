@@ -4,4 +4,4 @@
 paru -S --noconfirm --needed papirus-icon-theme
 
 # Configure KDE to use the Papirus icon theme
-/usr/lib/plasma-changeicons "Papirus"
+/usr/lib/plasma-changeicons "Papirus-Dark"
