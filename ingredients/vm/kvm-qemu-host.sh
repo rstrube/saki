@@ -6,7 +6,7 @@ source $DIR/../_helper/_common-functions.sh
 
 # Installs all the neccessary packages to support running / managing KVM virtual machines
 # Note edk2-ovmf supports VMs with UEFI instead of traditional BIOS
-paru -S --noconfirm --needed qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat iptables-nft edk2-ovmf dmidecode
+paru -S --needed qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat iptables-nft edk2-ovmf dmidecode
 
 # Tweak some permissions for libvirtd to allow non-root users to interact with KVM virtual machines
 sudo sed -i "s/#unix_sock_group/unix_sock_group/" "/etc/libvirt/libvirtd.conf"
