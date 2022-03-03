@@ -118,7 +118,7 @@ function install() {
         networkmanager          `# Networkmanager` \
         git                     `# Git` \
         vim                     `# Text editor` \
-        cpupower                `# Tool for managing your CPU frequency and govenor` \
+        cpupower                `# Tool for managing your CPU frequency and governor` \
         reflector               `# Utility to manage pacman mirrors`
 
     # Install additional firmware and uCode
