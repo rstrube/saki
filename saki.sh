@@ -22,10 +22,6 @@ AMD_GPU="false"
 INTEL_GPU="false"
 NVIDIA_GPU="false"
 
-# Install Xorg and configure KDE to use it by default?
-# If set to "false" KDE will be configured to use Wayland by default
-XORG_INSTALL="false"
-
 # Hostname to ping to check network connection
 PING_HOSTNAME="www.google.com"
 
@@ -46,7 +42,8 @@ USER_NAME=""
 USER_PASSWORD=""
 
 # Additional Linux Command Line Params
-CMDLINE_LINUX=""
+# Note if using a NVIDIA GPU + Wayland make sure to add "nvidia-drm.modeset=1"
+CMDLINE_LINUX="" #"nvidia-drm.modeset=1"
 
 # Installation Scripts
 #################################################
@@ -207,7 +204,7 @@ function install() {
 
     # Install KDE
     arch-chroot /mnt pacman -S --noconfirm --needed \
-        plasma                              `# KDE DE` \
+        plasma plasma-wayland-session       `# KDE Plasma + Wayland Support` \
         plasma-nm                           `# NetworkManager applet` \
         kwallet kwallet-pam kwalletmanager  `# KWallet subsystem` \
         konsole                             `# Common KDE apps and utilities` \
@@ -239,11 +236,6 @@ function install() {
     arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire-pulse.service /home/${USER_NAME}/.config/systemd/user/default.target.wants/pipewire-pulse.service
     arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire-pulse.socket /home/${USER_NAME}/.config/systemd/user/sockets.target.wants/pipewire-pulse.socket
 
-    # Wayland installation
-    if [[ "$XORG_INSTALL" == "false" ]]; then
-        arch-chroot /mnt pacman -S --noconfirm --needed plasma-wayland-session
-    fi
-
     # Enable SDDM as the default Display Manager
     arch-chroot /mnt systemctl enable sddm.service
 
@@ -257,11 +249,13 @@ function install() {
         # Note: installing newer intel-media-driver (iHD) instead of libva-intel-driver (i965)
         # Intel drivers only supports VA-API
         arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver libva-utils
+        arch-chroot /mnt echo "LIBVA_DRIVER_NAME=iHD" >> /etc/environment
     fi
 
     if [[ "$AMD_GPU" == "true" ]]; then
         # AMDGPU supports both VA-API and VDPAU, but we're only installing support for VA-API
         arch-chroot /mnt pacman -S --noconfirm --needed $COMMON_VULKAN_PACKAGES mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver libva-utils
+        arch-chroot /mnt echo "LIBVA_DRIVER_NAME=radeonsi" >> /etc/environment
     fi
     
     if [[ "$NVIDIA_GPU" == "true" ]]; then
@@ -403,10 +397,6 @@ function confirm_install() {
     print_variables_boolean "AMD_GPU" "$AMD_GPU"
     print_variables_boolean "INTEL_GPU" "$INTEL_GPU"
     print_variables_boolean "NVIDIA_GPU" "$NVIDIA_GPU"
-    echo ""
-
-    echo -e "${LBLUE}DE Configuration:${NC}"
-    print_variables_boolean "XORG_INSTALL" "$XORG_INSTALL"
     echo ""
 
     echo -e "${LBLUE}Host Configuration:${NC}"
