@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-03-02-18:51:53
+# recipe.sh : 2022-03-03-14:02:33
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -61,11 +61,6 @@ function main() {
 # --------------------------------------------------------------------------
 #./ingredients/gaming/steam.sh steam #Steam gaming platform
 
-# Hardware
-# --------------------------------------------------------------------------
-#./ingredients/hardware/cpu-intel_undervolt-support.sh #Utilities neccessary to undervolt Intel CPUs
-#./ingredients/hardware/logitec-mouse_solaar.sh #GUI application for managing logitec unifying receivers
-
 # VM
 # --------------------------------------------------------------------------
 #./ingredients/vm/kvm-qemu-guest.sh #KVM/QEMU guest utilities (only install if running as VM)
@@ -78,6 +73,11 @@ function main() {
 # Fonts
 # --------------------------------------------------------------------------
 #./ingredients/fonts/kde-fonts.sh #Install and configure sane fonts for KDE
+
+# Hardware
+# --------------------------------------------------------------------------
+#./ingredients/hardware/amd-cpu_undervolt-support.sh #Support for undervolting AMD CPUs [Requires additional configuration]
+#./ingredients/hardware/logitec-mouse_solaar.sh #GUI application for managing logitec unifying receivers
 
 # 14. Additional Packages
 # --------------------------------------------------------------------------

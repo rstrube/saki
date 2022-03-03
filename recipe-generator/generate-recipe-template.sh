@@ -35,10 +35,10 @@ function generate-recipe() {
     generate-recipe-section "# Productivity" "../ingredients/productivity"
     generate-recipe-section "# Media" "../ingredients/media"
     generate-recipe-section "# Gaming" "../ingredients/gaming"
-    generate-recipe-section "# Hardware" "../ingredients/hardware"
     generate-recipe-section "# VM" "../ingredients/vm"
     generate-recipe-section "# Icons" "../ingredients/icons"
     generate-recipe-section "# Fonts" "../ingredients/fonts"
+    generate-recipe-section "# Hardware" "../ingredients/hardware"
 
     echo "" >> $GENERATED_RECIPE_TEMPLATE_FILE
     
