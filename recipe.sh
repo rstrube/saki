@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-03-02-09:08:15
+# recipe.sh : 2022-03-02-18:51:53
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -52,6 +52,7 @@ function main() {
 # Media
 # --------------------------------------------------------------------------
 #./ingredients/media/codecs.sh #Codecs for Audio, Images, and Video
+#./ingredients/media/gpodder.sh #Excellent podcast manager
 #./ingredients/media/kde-gstreamer.sh #KDE Phonon with GStreamer backend + Plugins
 #./ingredients/media/tauon-music-box.sh #Tauon Music Box
 #./ingredients/media/vlc.sh #VLC media player
@@ -62,7 +63,6 @@ function main() {
 
 # Hardware
 # --------------------------------------------------------------------------
-#./ingredients/hardware/cpu-generic_cpupower-gui.sh #GUI utility to set CPU govenor settings
 #./ingredients/hardware/cpu-intel_undervolt-support.sh #Utilities neccessary to undervolt Intel CPUs
 #./ingredients/hardware/logitec-mouse_solaar.sh #GUI application for managing logitec unifying receivers
 
