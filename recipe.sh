@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-03-08-15:16:49
+# recipe.sh : 2022-03-08-15:38:59
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -16,6 +16,7 @@ function main() {
 # System
 # --------------------------------------------------------------------------
 #./ingredients/system/btop.sh #btop: a terminal based system monitoring tool (like htop but better)
+#./ingredients/system/kde-configure-baloo-basic-indexing.sh #Configure Baloo file indexer to only perform basic indexing (performance improvement)
 #./ingredients/system/kde-overview-and-shortcuts.sh #Enable new Plasma overview feature and set sane shortcuts
 #./ingredients/system/libsecret-gnome-keyring.sh #Add support for libsecret via Gnome keyring (use until KWallet has libsecret support)
 
