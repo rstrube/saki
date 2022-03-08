@@ -17,3 +17,14 @@ function create_empty_vscode_settings_if_neccessary {
         echo "}" >> "$VSCODE_SETTINGS_FILE_PATH"
     fi
 }
+
+function create_and_configure_code_flags_for_wayland {
+
+    cat <<EOT > "code-flags.conf"	
+--enable-features=UseOzonePlatform
+--ozone-platform=wayland
+EOT
+
+    cp code-flags.conf ~/.config/
+    rm code-flags.conf
+}
