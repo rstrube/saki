@@ -13,6 +13,7 @@ function main() {
 
 function install() {
 
+    mkdir -p ~/.config/fish/conf.d
     configure_fish_aliases
     configure_fish_tty_colors
     configure_fish_reset_colors
@@ -29,7 +30,6 @@ alias grep="grep --color"
 alias pacman_remove_orphans="paru -c"
 EOT
 
-    mkdir -p ~/.config/fish/conf.d
     cp aliases.fish ~/.config/fish/conf.d/.
     rm aliases.fish
 }

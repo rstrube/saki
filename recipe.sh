@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-03-03-14:02:33
+# recipe.sh : 2022-03-08-15:16:49
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -48,6 +48,7 @@ function main() {
 # Productivity
 # --------------------------------------------------------------------------
 #./ingredients/productivity/flameshot.sh #Flameshot (screenshot application)
+#./ingredients/productivity/obsidian.sh #Excellent markdown based note manager and "second brain"
 
 # Media
 # --------------------------------------------------------------------------

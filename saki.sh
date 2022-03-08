@@ -428,6 +428,10 @@ function confirm_install() {
     print_variables_value "USER_PASSWORD" "$USER_PASSWORD"
     echo ""
 
+    echo -e "${LBLUE}Linux Command Line Params:${NC}"
+    print_variables_value "CMDLINE_LINUX" "$CMDLINE_LINUX"
+    echo ""
+
     read -p "Do you want to continue? [y/N] " yn
     case $yn in
         [Yy]* )
