@@ -9,7 +9,7 @@ function install_fonts {
     # Jetbrains Mono: a fantastic monospace font
     # Droid: another common font that came with Google's Android OS
     # Liberation: font family which aims at metric compatibility with Arial, Times New Roman, and Courier New
-    paru -S --noconfirm --needed oft-font-awesome ttf-roboto ttf-roboto-mono ttf-fira-code ttf-jetbrains-mono ttf-droid ttf-liberation
+    paru -S --noconfirm --needed otf-font-awesome ttf-roboto ttf-roboto-mono ttf-fira-code ttf-jetbrains-mono ttf-droid ttf-liberation
 
     # This rebuilds the font-cache, taking into account any changes
     sudo fc-cache -r -v
