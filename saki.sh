@@ -128,6 +128,10 @@ function install() {
         arch-chroot /mnt pacman -S --noconfirm --needed linux-firmware intel-ucode
     fi
 
+    # Enable systemd-resolved local caching DNS provider
+    # Note: NetworkManager uses systemd-resolved by default
+    arch-chroot /mnt systemctl enable systemd-resolved.service
+
     # Enable NetworkManager.service
     # Note: NetworkManager will handle DHCP
     arch-chroot /mnt systemctl enable NetworkManager.service
