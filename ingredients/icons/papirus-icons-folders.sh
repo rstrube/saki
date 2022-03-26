@@ -20,7 +20,7 @@ function main() {
 
     check_variables
 
-    if [[ $THEME_NAME != "Papirus" && "$THEME_NAME" != "Papirus-Dark" ]]
+    if [[ "$THEME_NAME" != "Papirus" && "$THEME_NAME" != "Papirus-Dark" ]]; then
         echo -e "${RED}Theme name must == Papirus || Papirus-Dark ${NC}"
     fi
 
