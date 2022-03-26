@@ -39,6 +39,7 @@ function generate-recipe() {
     generate-recipe-section "# Icons" "../ingredients/icons"
     generate-recipe-section "# Fonts" "../ingredients/fonts"
     generate-recipe-section "# Hardware" "../ingredients/hardware"
+    generate-recipe-section "# Themes" "../ingredients/themes"
 
     echo "" >> $GENERATED_RECIPE_TEMPLATE_FILE
     

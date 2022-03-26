@@ -1,5 +1,5 @@
 #!/bin/bash
-#|#./ingredients/fonts/kde-fonts.sh #Install and configure sane fonts for KDE
+#|#./ingredients/fonts/0_kde-fonts.sh #Install and configure sane fonts for KDE
 
 DIR=$(dirname "$0")
 source $DIR/_helper/_font-common-functions.sh

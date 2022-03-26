@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-03-08-15:38:59
+# recipe.sh : 2022-03-25-20:48:48
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -28,14 +28,12 @@ function main() {
 # --------------------------------------------------------------------------
 #./ingredients/dev/0_git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
 #./ingredients/dev/1_vscode.sh #Visual Studio Code
+#./ingredients/dev/2_kde-vscode-wayland.sh #Native Wayland Support for VSCode [Requires /dev/1_vscode ingredient]
 #./ingredients/dev/android.sh #Android development tools (ADB, etc.)
 #./ingredients/dev/dotnet.sh #.NET Core SDK and Runtimes
 #./ingredients/dev/git-credential-manager-core.sh #Git Crendential Manager (.NET Core based)
 #./ingredients/dev/postman.sh #Postman
-#./ingredients/dev/vscode-dracula-theme.sh #Dracula theme for VSCode [Requires /dev/1_vscode ingredient]
-#./ingredients/dev/vscode-fonts-jetbrains-mono.sh #JetBrains Mono font for Visual Studio Code [Requires /dev/vscode and /fonts/fonts ingredients]
 #./ingredients/dev/vscode-vim.sh #vim extension for VSCode [Requires /dev/1_vscode ingredient]
-#./ingredients/dev/vscode-wayland.sh #Native Wayland Support for VSCode [Requires /dev/1_vscode ingredient]
 
 # Web
 # --------------------------------------------------------------------------
@@ -50,6 +48,7 @@ function main() {
 # --------------------------------------------------------------------------
 #./ingredients/productivity/flameshot.sh #Flameshot (screenshot application)
 #./ingredients/productivity/obsidian.sh #Excellent markdown based note manager and "second brain"
+#./ingredients/productivity/obsidian-wayland.sh #Configure Obsidian to run as a native Wayland application
 
 # Media
 # --------------------------------------------------------------------------
@@ -61,7 +60,7 @@ function main() {
 
 # Gaming
 # --------------------------------------------------------------------------
-#./ingredients/gaming/steam.sh steam #Steam gaming platform
+#./ingredients/gaming/steam.sh #Steam gaming platform
 
 # VM
 # --------------------------------------------------------------------------
@@ -70,16 +69,23 @@ function main() {
 
 # Icons
 # --------------------------------------------------------------------------
-#./ingredients/icons/0_papirus-icons.sh #Papirus icon theme
+#./ingredients/icons/0_kde-papirus-icons.sh #Papirus icon theme and config for KDE
+#./ingredients/icons/papirus-icons-folders.sh indigo Papirus-Dark #Supplmental colored folders for Papirus icon theme [Requires /icons/0_xxx-papirus-icons ingredient]
+# Folder colors: black, bluegrey, brown, deeporange, grey, magenta, orange, paleorange, red, violet, yaru, blue, breeze, cyan, green, indigo, nordic, palebrown, pink, teal, white, yellow
 
 # Fonts
 # --------------------------------------------------------------------------
-#./ingredients/fonts/kde-fonts.sh #Install and configure sane fonts for KDE
+#./ingredients/fonts/0_kde-fonts.sh #Install and configure sane fonts for KDE
+#./ingredients/fonts/vscode-jetbrains-mono.sh #JetBrains Mono font for Visual Studio Code [Requires /dev/1_vscode and /fonts/0_xxx-fonts ingredients]
 
 # Hardware
 # --------------------------------------------------------------------------
-#./ingredients/hardware/amd-cpu_undervolt-support.sh #Support for undervolting AMD CPUs [Requires additional configuration]
-#./ingredients/hardware/logitec-mouse_solaar.sh #GUI application for managing logitec unifying receivers
+#./ingredients/hardware/cpu-amd-undervolt-support.sh #Support for undervolting AMD CPUs [Requires additional configuration]
+#./ingredients/hardware/mouse-logitec-solaar.sh #GUI application for managing logitec unifying receivers
+
+# Themes
+# --------------------------------------------------------------------------
+#./ingredients/themes/dracula-theme-vscode.sh #Dracula theme for VSCode [Requires /dev/1_vscode ingredient]
 
 # 14. Additional Packages
 # --------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 #!/bin/bash
-#|#./ingredients/hardware/amd-cpu_undervolt-support.sh #Support for undervolting AMD CPUs [Requires additional configuration]
+#|#./ingredients/hardware/cpu-amd-undervolt-support.sh #Support for undervolting AMD CPUs [Requires additional configuration]
 
 DIR=$(dirname "$0")
 source $DIR/../_helper/_common-functions.sh
