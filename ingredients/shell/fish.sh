@@ -18,6 +18,11 @@ function install() {
     configure_fish_tty_colors
     configure_fish_reset_colors
     configure_fish
+
+    # Change the shell to fish
+    chsh -s /usr/bin/fish
+
+    echo -e "${YELLOW}Warning: you will need logout in order for the shell change to take effect.${NC}"
 }
 
 function configure_fish_aliases() {
@@ -39,7 +44,7 @@ function configure_fish_tty_colors {
     cat <<EOT > "tty-colors.fish"
 # Set colors for TTY (Linux Virtual Console) so things look good
 
-if [ "$TERM" = "linux" ]
+if [ "\$TERM" = "linux" ]
     echo -en "\e]P0282a36" #color 0: background (Dracula Background)
     echo -en "\e]PFf8f8f2" #color F: foreground (Dracula Foreground)
 
@@ -119,8 +124,3 @@ EOT
 }
 
 main "$@"
-
-# Change the shell to fish
-chsh -s /usr/bin/fish
-
-echo -e "${YELLOW}Warning: you will need logout in order for the shell change to take effect.${NC}"
