@@ -223,6 +223,7 @@ function install() {
         kdegraphics-thumbnailers \
         ffmpegthumbs \
         okular gwenview kwrite kcalc \
+        kimageformats qt5-imageformats \
         kcharselect \
         partitionmanager \
         ksystemlog \
