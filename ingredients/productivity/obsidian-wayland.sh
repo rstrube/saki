@@ -8,7 +8,7 @@ function create_and_configure_electron_flags_for_wayland {
     fi
 
     cat <<EOT > "electron-flags.conf"	
---enable-features=UseOzonePlatform
+--enable-features=UseOzonePlatform,WebRTCPipeWireCapturer
 --ozone-platform=wayland
 EOT
 

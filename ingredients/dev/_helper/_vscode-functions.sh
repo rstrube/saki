@@ -36,7 +36,7 @@ function create_and_configure_code_flags_for_wayland {
     fi
 
     cat <<EOT > "code-flags.conf"	
---enable-features=UseOzonePlatform
+--enable-features=UseOzonePlatform,WebRTCPipeWireCapturer
 --ozone-platform=wayland
 EOT
 
