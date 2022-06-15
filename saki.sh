@@ -99,11 +99,11 @@ function install() {
     chmod 600 /mnt"$SWAPFILE"
     mkswap /mnt"$SWAPFILE"
 
+    # Force a refresh of the archlinux-keyring package for the arch installation environment
+    pacman -Sy --noconfirm archlinux-keyring
+
     # Bootstrap new environment
     pacstrap /mnt
-
-    # Force a refresh of the archlinux-keyring package
-    arch-chroot /mnt pacman -Syyu --noconfirm archlinux-keyring
 
     # Install essential packages
     arch-chroot /mnt pacman -S --noconfirm --needed \
@@ -141,7 +141,6 @@ function install() {
 
     # Configure color support for pacman
     arch-chroot /mnt sed -i 's/#Color/Color/' /etc/pacman.conf
-    arch-chroot /mnt sed -i 's/#TotalDownload/TotalDownload/' /etc/pacman.conf
 
     # Enable multilib
     arch-chroot /mnt sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
@@ -236,7 +235,7 @@ function install() {
         noto-fonts noto-fonts-emoji         `# Noto fonts to support emojis` \
         rust                                `# Rust for paru AUR helper`
 
-    #Note: systemctl enable --user doesn't work via arch-chroot, performing manual creation of symlinks
+    # Note: systemctl enable --user doesn't work via arch-chroot, performing manual creation of symlinks
     # systemctl enable --user --now pipewire.service
     # systemctl enable --user --now pipewire-pulse.service
     arch-chroot -u $USER_NAME /mnt mkdir -p /home/${USER_NAME}/.config/systemd/user/default.target.wants
@@ -247,6 +246,12 @@ function install() {
 
     arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire-pulse.service /home/${USER_NAME}/.config/systemd/user/default.target.wants/pipewire-pulse.service
     arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/pipewire-pulse.socket /home/${USER_NAME}/.config/systemd/user/sockets.target.wants/pipewire-pulse.socket
+
+    # systemctl enable --user --now wireplumber.service
+    arch-chroot -u $USER_NAME /mnt mkdir -p /home/${USER_NAME}/.config/systemd/user/pipewire.service.wants
+
+    arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/wireplumber.service /home/${USER_NAME}/.config/systemd/user/pipewire-session-manager.service
+    arch-chroot -u $USER_NAME /mnt ln -s /usr/lib/systemd/user/wireplumber.service /home/${USER_NAME}/.config/systemd/user/pipewire.service.wants/wireplumber.service
 
     # Enable SDDM as the default Display Manager
     arch-chroot /mnt systemctl enable sddm.service
