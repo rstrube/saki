@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-04-12-16:16:55
+# recipe.sh : 2022-06-17-10:18:56
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -24,17 +24,6 @@ function main() {
 # --------------------------------------------------------------------------
 #./ingredients/editor/neovim.sh #Neovim (replaces vim)
 
-# Development
-# --------------------------------------------------------------------------
-#./ingredients/dev/0_git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
-#./ingredients/dev/1_vscode.sh #Visual Studio Code
-#./ingredients/dev/2_kde-vscode-wayland.sh #Native Wayland Support for VSCode [Requires /dev/1_vscode ingredient]
-#./ingredients/dev/android.sh #Android development tools (ADB, etc.)
-#./ingredients/dev/dotnet.sh #.NET Core SDK and Runtimes
-#./ingredients/dev/git-credential-manager-core.sh #Git Crendential Manager (.NET Core based)
-#./ingredients/dev/postman.sh #Postman
-#./ingredients/dev/vscode-vim.sh #vim extension for VSCode [Requires /dev/1_vscode ingredient]
-
 # Web
 # --------------------------------------------------------------------------
 #./ingredients/web/firefox.sh #Firefox
@@ -43,6 +32,17 @@ function main() {
 #./ingredients/web/google-chrome-wayland.sh #Native Wayland Support for Google Chrome [Requires /web/google-chrome ingredient]
 #./ingredients/web/remmina.sh #Remmina RDP client
 #./ingredients/web/slack.sh #Slack
+
+# Development
+# --------------------------------------------------------------------------
+#./ingredients/dev/0_git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
+#./ingredients/dev/1_vscode.sh #Visual Studio Code
+#./ingredients/dev/2_kde-vscode-wayland.sh #Native Wayland Support for VSCode [Requires /dev/1_vscode ingredient]
+#./ingredients/dev/android.sh #Android development tools (ADB, etc.)
+#./ingredients/dev/dotnet.sh #.NET Core SDK and Runtimes, Setup ASP.NET Dev HTTPS Cert
+#./ingredients/dev/git-credential-manager-core.sh #Git Crendential Manager (.NET Core based)
+#./ingredients/dev/postman.sh #Postman
+#./ingredients/dev/vscode-vim.sh #vim extension for VSCode [Requires /dev/1_vscode ingredient]
 
 # Productivity
 # --------------------------------------------------------------------------

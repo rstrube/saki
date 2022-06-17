@@ -26,7 +26,7 @@ function update_code_desktop_file_for_wayland {
     fi
 
     cp /usr/share/applications/visual-studio-code.desktop ~/.local/share/applications/.
-    sed -i 's/\/usr\/bin\/code/& --enable-features=UseOzonePlatform --ozone-platform=wayland/' ~/.local/share/applications/visual-studio-code.desktop
+    sed -i 's/\/usr\/bin\/code/& --enable-features=UseOzonePlatform,WebRTCPipeWireCapturer --ozone-platform=wayland/' ~/.local/share/applications/visual-studio-code.desktop
 }
 
 function create_and_configure_code_flags_for_wayland {

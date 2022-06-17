@@ -1,6 +1,17 @@
 #!/bin/bash
 # Generate Recipe Template
 
+echo "Copying ingredients from saxx_common..."
+cp -r ../../saxx-common/ingredients/* ../ingredients/
+
+echo "Removing unrelated ingredients for sagi..."
+rm ../ingredients/core/aur.sh 
+rm ../ingredients/fonts/0_fonts.sh 
+rm ../ingredients/icons/0_papirus-icons.sh
+rm ../ingredients/media/gstreamer.sh 
+rm ../ingredients/system/seahorse.sh
+
+echo "Generating recipe..."
 DATE=$(date +%Y-%m-%d-%H:%M:%S)
 GENERATED_RECIPE_TEMPLATE_NAME="recipe.sh"
 GENERATED_RECIPE_TEMPLATE_FILE="../$GENERATED_RECIPE_TEMPLATE_NAME"
@@ -30,8 +41,8 @@ function generate-recipe() {
     generate-recipe-section "# Filesystem" "../ingredients/fs"
     generate-recipe-section "# System" "../ingredients/system"
     generate-recipe-section "# Editors" "../ingredients/editor"
-    generate-recipe-section "# Development" "../ingredients/dev"
     generate-recipe-section "# Web" "../ingredients/web"
+    generate-recipe-section "# Development" "../ingredients/dev"
     generate-recipe-section "# Productivity" "../ingredients/productivity"
     generate-recipe-section "# Media" "../ingredients/media"
     generate-recipe-section "# Gaming" "../ingredients/gaming"
