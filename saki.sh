@@ -60,12 +60,17 @@ function main() {
 }
 
 function install() {
+    
+    # 1. System clock and initial reflector pass
+    # ------------------------------------------
     # Update system clock
     timedatectl set-ntp true
 
     # Update pacman mirrors
-    reflector --verbose --country "$REFLECTOR_COUNTRY" --latest 10 --sort rate --save /etc/pacman.d/mirrorlist
+    reflector --verbose --country "$REFLECTOR_COUNTRY" --latest 25 --sort rate --save /etc/pacman.d/mirrorlist
 
+    # 2. HD partitioning and formatting
+    # ---------------------------------
     # Partion the drive with a single 512 MB ESP partition, and the rest of the drive as the root partition
     parted -s $HD_DEVICE mklabel gpt mkpart ESP fat32 1MiB 512MiB mkpart root ext4 512MiB 100% set 1 esp on
 
@@ -99,6 +104,8 @@ function install() {
     chmod 600 /mnt"$SWAPFILE"
     mkswap /mnt"$SWAPFILE"
 
+    # 3. Initial pacstrap and core packages
+    # -------------------------------------
     # Force a refresh of the archlinux-keyring package for the arch installation environment
     pacman -Sy --noconfirm archlinux-keyring
 
@@ -123,11 +130,15 @@ function install() {
     # Install additional firmware and uCode
     if [[ "$AMD_CPU" == "true" ]]; then
         arch-chroot /mnt pacman -S --noconfirm --needed linux-firmware amd-ucode
+        MICROCODE="amd-ucode.img"
 
     elif [[ "$INTEL_CPU" == "true" ]]; then
         arch-chroot /mnt pacman -S --noconfirm --needed linux-firmware intel-ucode
+        MICROCODE="intel-ucode.img"
     fi
 
+    # 4. Core system configuration
+    # ----------------------------
     # Enable systemd-resolved local caching DNS provider
     # Note: NetworkManager uses systemd-resolved by default
     arch-chroot /mnt systemctl enable systemd-resolved.service
@@ -171,6 +182,9 @@ function install() {
     arch-chroot /mnt locale-gen
     echo -e "LANG=$LANG" >> /mnt/etc/locale.conf
 
+    # Configure keymap for virtual console (tty)
+    echo -e "KEYMAP=$KEYS" > /mnt/etc/vconsole.conf
+
     # Configure hostname and hosts files
     echo $HOSTNAME > /mnt/etc/hostname
     echo "127.0.0.1	localhost" >> /mnt/etc/hosts
@@ -180,37 +194,80 @@ function install() {
     # Configure root password
     printf "$ROOT_PASSWORD\n$ROOT_PASSWORD" | arch-chroot /mnt passwd
 
-    # Install and configure Grub as bootloader on ESP
-    arch-chroot /mnt pacman -S --noconfirm --needed grub efibootmgr
+    # Configure reflector
+    echo "--save /etc/pacman.d/mirrorlist" > /mnt/etc/xdg/reflector/reflector.conf
+    echo "--country \"$REFLECTOR_COUNTRY\"" >> /mnt/etc/xdg/reflector/reflector.conf
+    echo "--protocol https" >> /mnt/etc/xdg/reflector/reflector.conf
+    echo "--latest 25" >> /mnt/etc/xdg/reflector/reflector.conf
+    echo "--sort rate" >> /mnt/etc/xdg/reflector/reflector.conf
 
+    # 5. Bootloader configuration (systemd-boot)
+    # ------------------------------------------
     # Add KMS if using a NVIDIA GPU
     if [[ "$NVIDIA_GPU" == "true" ]]; then
         CMDLINE_LINUX="$CMDLINE_LINUX nvidia-drm.modeset=1"
     fi
 
-    CMDLINE_LINUX=$(trim_variable "$CMDLINE_LINUX")
-    arch-chroot /mnt sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="'"$CMDLINE_LINUX"'"/' /etc/default/grub
+    # Note: standard hooks for /etc/mkinitcpio.conf are: (base udev autodetect modconf block filesystems keyboard fsck)
+    # This updates the standard hooks to support systemd-boot
+    arch-chroot /mnt sed -i "s/^HOOKS=(.*)$/HOOKS=(base systemd autodetect modconf block filesystems keyboard sd-vconsole fsck)/" /etc/mkinitcpio.conf
 
-    # Note the '--removable' switch will also setup grub on /boot/EFI/BOOT/BOOTX64.EFI (which is the Windows default location)
-    # This is neccessary because many BIOSes don't honor efivars correctly
-    arch-chroot /mnt grub-install --target=x86_64-efi --bootloader-id=grub --efi-directory=/boot --recheck --removable
-    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    # Need to rebuild the initramfs after updating hooks
+    arch-chroot /mnt mkinitcpio -P
 
+    # systemd-boot installation and configuration
+    # -------------------------------------------
+    # Get the UUID for the root partition
+    UUID_ROOTFS_PARTITION=$(blkid -s UUID -o value "$ROOTFS_PARTITION")
+    CMDLINE_LINUX_ROOT="root=UUID=$UUID_ROOTFS_PARTITION"
+
+    arch-chroot /mnt systemd-machine-id-setup
+    arch-chroot /mnt bootctl install
+
+    arch-chroot /mnt mkdir -p /boot/loader
+    arch-chroot /mnt mkdir -p /boot/loader/entries
+
+    # Main systemd-boot config
+    echo "timeout 5" >> "/mnt/boot/loader/loader.conf"
+    echo "default archlinux.conf" >> "/mnt/boot/loader/loader.conf"
+    echo "editor 1" >> "/mnt/boot/loader/loader.conf"
+
+    # Config for normal boot
+    echo "title Arch Linux" >> "/mnt/boot/loader/entries/archlinux.conf"
+    echo "efi /vmlinuz-linux" >> "/mnt/boot/loader/entries/archlinux.conf"
+    if [ -n "$MICROCODE" ]; then
+        echo "initrd /$MICROCODE" >> "/mnt/boot/loader/entries/archlinux.conf"
+    fi
+    echo "initrd /initramfs-linux.img" >> "/mnt/boot/loader/entries/archlinux.conf"
+    echo "options initrd=initramfs-linux.img $CMDLINE_LINUX_ROOT rw $CMDLINE_LINUX" >> "/mnt/boot/loader/entries/archlinux.conf"
+
+    # Config for booting into terminal only
+    echo "title Arch Linux (terminal)" >> "/mnt/boot/loader/entries/archlinux-terminal.conf"
+    echo "efi /vmlinuz-linux" >> "/mnt/boot/loader/entries/archlinux-terminal.conf"
+    if [ -n "$MICROCODE" ]; then
+        echo "initrd /$MICROCODE" >> "/mnt/boot/loader/entries/archlinux-terminal.conf"
+    fi
+    echo "initrd /initramfs-linux.img" >> "/mnt/boot/loader/entries/archlinux-terminal.conf"
+    echo "options initrd=initramfs-linux.img $CMDLINE_LINUX_ROOT rw $CMDLINE_LINUX systemd.unit=multi-user.target" >> "/mnt/boot/loader/entries/archlinux-terminal.conf"
+
+    # Config for fallback boot (uses old initramfs)
+    echo "title Arch Linux (fallback)" >> "/mnt/boot/loader/entries/archlinux-fallback.conf"
+    echo "efi /vmlinuz-linux" >> "/mnt/boot/loader/entries/archlinux-fallback.conf"
+    if [ -n "$MICROCODE" ]; then
+        echo "initrd /$MICROCODE" >> "/mnt/boot/loader/entries/archlinux-fallback.conf"
+    fi
+    echo "initrd /initramfs-linux-fallback.img" >> "/mnt/boot/loader/entries/archlinux-fallback.conf"
+    echo "options initrd=initramfs-linux-fallback.img $CMDLINE_LINUX_ROOT rw $CMDLINE_LINUX" >> "/mnt/boot/loader/entries/archlinux-fallback.conf"
+
+    # 6. User configuration
+    # ---------------------
     # Setup user and allow user to use "sudo"
     arch-chroot /mnt useradd -m -G wheel,storage,optical -s /bin/bash $USER_NAME
     printf "$USER_PASSWORD\n$USER_PASSWORD" | arch-chroot /mnt passwd $USER_NAME
     arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
-    # Configure reflector
-    echo "--save /etc/pacman.d/mirrorlist" > /mnt/etc/xdg/reflector/reflector.conf
-    echo "--country \"$REFLECTOR_COUNTRY\"" >> /mnt/etc/xdg/reflector/reflector.conf
-    echo "--protocol https" >> /mnt/etc/xdg/reflector/reflector.conf
-    echo "--latest 10" >> /mnt/etc/xdg/reflector/reflector.conf
-    echo "--sort rate" >> /mnt/etc/xdg/reflector/reflector.conf
-
-    # Configure pacman hook for upgrading pacman-mirrorlist package
-    configure_pacman_mirrorupgrade_hook
-
+    # 7. DE & audio system configuration
+    # ----------------------------------
     # Install KDE
     arch-chroot /mnt pacman -S --noconfirm --needed \
         plasma plasma-wayland-session       `# KDE Plasma + Wayland Support` \
@@ -231,7 +288,6 @@ function install() {
         pipewire-jack                       `# Pipewire JACK support` \
         xdg-desktop-portal                  `# Support for screensharing in pipewire for KDE` \
         xdg-desktop-portal-kde \
-        ttf-liberation                      `# Liberation fonts` \
         noto-fonts noto-fonts-emoji         `# Noto fonts to support emojis` \
         rust                                `# Rust for paru AUR helper`
 
@@ -259,6 +315,8 @@ function install() {
     # Configure SDDM to use a sane theme (breeze)
     configure_sddm
 
+    # 8. GPU Configuration
+    # --------------------
     # Install GPU Drivers
     COMMON_VULKAN_PACKAGES="vulkan-icd-loader lib32-vulkan-icd-loader vulkan-tools"
 
@@ -287,12 +345,24 @@ function install() {
         configure_pacman_nvidia_hook
     fi
 
+    # 9. AUR configuration
+    # --------------------
     # Install AUR helper
     install_aur_helper
 
     # Install AUR packages
     # exec_as_user "paru -S --noconfirm --needed xxx"
 
+    # 10. Additional pacman hooks
+    # ---------------------------
+    # Configure pacman hook for upgrading pacman-mirrorlist package
+    configure_pacman_mirrorupgrade_hook
+
+    # Configure pacman hook for updating systemd-boot when systemd is updated
+    configure_pacman_systemd_boot_hook
+
+    # 11. Clone repo for additional ingredients
+    # -----------------------------------------
     # Clone saki git repo so that user can run post-install recipe
     arch-chroot -u $USER_NAME /mnt git clone https://github.com/rstrube/saki.git /home/${USER_NAME}/saki
     
@@ -470,6 +540,25 @@ function exec_as_user() {
     arch-chroot /mnt sed -i 's/^%wheel ALL=(ALL:ALL) ALL$/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers
     arch-chroot /mnt bash -c "echo -e \"$USER_PASSWORD\n$USER_PASSWORD\n$USER_PASSWORD\n$USER_PASSWORD\n\" | su $USER_NAME -s /usr/bin/bash -c \"$COMMAND\""
     arch-chroot /mnt sed -i 's/^%wheel ALL=(ALL:ALL) NOPASSWD: ALL$/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+}
+
+function configure_pacman_systemd_boot_hook() {	
+    if [[ ! -d "/mnt/etc/pacman.d/hooks" ]]; then	
+        arch-chroot /mnt mkdir -p /etc/pacman.d/hooks	
+    fi	
+
+    cat <<EOT > "/mnt/etc/pacman.d/hooks/sytemd-boot.hook"
+[Trigger]
+Type=Package
+Operation=Upgrade
+Target=systemd
+
+[Action]
+Description=Gracefully upgrading systemd-boot...
+When=PostTransaction
+Exec=/usr/bin/systemctl restart systemd-boot-update.service
+EOT
+
 }
 
 function configure_pacman_mirrorupgrade_hook() {	
