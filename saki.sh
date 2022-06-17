@@ -66,7 +66,7 @@ function install() {
     # Update system clock
     timedatectl set-ntp true
 
-    # Update pacman mirrors
+    # Select the fastest pacman mirrors
     reflector --verbose --country "$REFLECTOR_COUNTRY" --latest 25 --sort rate --save /etc/pacman.d/mirrorlist
 
     # 2. HD partitioning and formatting
@@ -98,6 +98,7 @@ function install() {
     # Mount the ESP partition
     mount -o defaults,noatime $BOOT_PARTITION /mnt/boot
 
+    # Build out swapfile
     SWAPFILE="/swapfile"
     fallocate --length ${SWAPFILE_SIZE}MiB /mnt"$SWAPFILE"
     chown root /mnt"$SWAPFILE"
@@ -208,6 +209,8 @@ function install() {
         CMDLINE_LINUX="$CMDLINE_LINUX nvidia-drm.modeset=1"
     fi
 
+    CMDLINE_LINUX=$(trim_variable "$CMDLINE_LINUX")
+
     # Note: standard hooks for /etc/mkinitcpio.conf are: (base udev autodetect modconf block filesystems keyboard fsck)
     # This updates the standard hooks to support systemd-boot
     arch-chroot /mnt sed -i "s/^HOOKS=(.*)$/HOOKS=(base systemd autodetect modconf block filesystems keyboard sd-vconsole fsck)/" /etc/mkinitcpio.conf
@@ -215,8 +218,6 @@ function install() {
     # Need to rebuild the initramfs after updating hooks
     arch-chroot /mnt mkinitcpio -P
 
-    # systemd-boot installation and configuration
-    # -------------------------------------------
     # Get the UUID for the root partition
     UUID_ROOTFS_PARTITION=$(blkid -s UUID -o value "$ROOTFS_PARTITION")
     CMDLINE_LINUX_ROOT="root=UUID=$UUID_ROOTFS_PARTITION"
@@ -378,7 +379,7 @@ function check_critical_prereqs() {
     fi
 
     if [[ ! -d /sys/firmware/efi ]]; then
-        echo -e "${RED}Error: can only be run on UEFI systems.${NC}"
+        echo -e "${RED}Error: installation can only be run on UEFI systems.${NC}"
         echo "If running in a VM, make sure the VM is configured to use UEFI instead of BIOS."
         exit 1
     fi
@@ -458,7 +459,7 @@ function print_variables_boolean() {
 
 function check_conflicts() {
     if [[ "$AMD_CPU" == "true" && "$INTEL_CPU" == "true" ]]; then
-        echo -e "${RED}Error: AMD_CPU and INTEL_CPU are mutually exclusve and can't both =true.${NC}"
+        echo -e "${RED}Error: AMD_CPU and INTEL_CPU are mutually exclusve and can't both be set to 'true'.${NC}"
         exit 1
     fi
 }
@@ -563,7 +564,7 @@ EOT
 
 function configure_pacman_mirrorupgrade_hook() {	
     if [[ ! -d "/mnt/etc/pacman.d/hooks" ]]; then	
-        mkdir -p /mnt/etc/pacman.d/hooks	
+        arch-chroot /mnt mkdir -p /etc/pacman.d/hooks	
     fi	
 
     cat <<EOT > "/mnt/etc/pacman.d/hooks/mirrorupgrade.hook"	
@@ -583,7 +584,7 @@ EOT
 
 function configure_pacman_nvidia_hook() {
     if [[ ! -d "/mnt/etc/pacman.d/hooks" ]]; then
-        mkdir -p /mnt/etc/pacman.d/hooks
+        arch-chroot /mnt mkdir -p /etc/pacman.d/hooks	
     fi
 
     cat <<EOT > "/mnt/etc/pacman.d/hooks/nvidia.hook"
@@ -605,7 +606,7 @@ EOT
 
 function configure_sddm() {
     if [[ ! -d "/mnt/etc/sddm.conf.d" ]]; then
-        mkdir -p /mnt/etc/sddm.conf.d
+        arch-chroot /mnt mkdir -p /etc/sddm.conf.d
     fi
 
     cp /mnt/usr/lib/sddm/sddm.conf.d/default.conf /mnt/etc/sddm.conf.d/
