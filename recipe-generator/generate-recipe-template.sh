@@ -6,10 +6,14 @@ cp -r ../../saxx-common/ingredients/* ../ingredients/
 
 echo "Removing unrelated ingredients for sagi..."
 rm ../ingredients/core/aur.sh 
-rm ../ingredients/fonts/0_fonts.sh 
-rm ../ingredients/icons/0_papirus-icons.sh
+rm ../ingredients/dev/2_gnome-vscode-wayland.sh
+rm ../ingredients/fonts/0_gnome-fonts.sh
+rm -rf ../ingredients/gnome-ext
+rm ../ingredients/icons/0_gnome-papirus-icons.sh
 rm ../ingredients/media/gstreamer.sh 
 rm ../ingredients/system/seahorse.sh
+rm ../ingredients/themes/gnome-adwaita-dark-legacy-gtk.sh
+rm ../ingredients/themes/gnome-dracula-theme-gnome-terminal.sh
 
 echo "Generating recipe..."
 DATE=$(date +%Y-%m-%d-%H:%M:%S)

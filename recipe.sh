@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-06-20-10:01:30
+# recipe.sh : 2022-06-20-10:34:25
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -41,7 +41,6 @@ function main() {
 #./ingredients/dev/3_dotnet.sh #.NET Core SDK and Runtimes
 #./ingredients/dev/4_dotnet-https-dev-cert.sh #ASP.NET Dev HTTPS Cert [Requires /dev/dotnet ingredient]
 #./ingredients/dev/android.sh #Android development tools (ADB, etc.)
-#./ingredients/dev/dotnet.sh #.NET Core SDK and Runtimes, Setup ASP.NET Dev HTTPS Cert
 #./ingredients/dev/git-credential-manager-core.sh #Git Crendential Manager (.NET Core based)
 #./ingredients/dev/postman.sh #Postman
 #./ingredients/dev/vscode-vim.sh #vim extension for VSCode [Requires /dev/1_vscode ingredient]
