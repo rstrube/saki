@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-06-17-10:18:56
+# recipe.sh : 2022-06-20-10:01:30
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -38,6 +38,8 @@ function main() {
 #./ingredients/dev/0_git.sh "Firstname Lastname" "myname@mydomain.com" #Git installation and configuration
 #./ingredients/dev/1_vscode.sh #Visual Studio Code
 #./ingredients/dev/2_kde-vscode-wayland.sh #Native Wayland Support for VSCode [Requires /dev/1_vscode ingredient]
+#./ingredients/dev/3_dotnet.sh #.NET Core SDK and Runtimes
+#./ingredients/dev/4_dotnet-https-dev-cert.sh #ASP.NET Dev HTTPS Cert [Requires /dev/dotnet ingredient]
 #./ingredients/dev/android.sh #Android development tools (ADB, etc.)
 #./ingredients/dev/dotnet.sh #.NET Core SDK and Runtimes, Setup ASP.NET Dev HTTPS Cert
 #./ingredients/dev/git-credential-manager-core.sh #Git Crendential Manager (.NET Core based)
@@ -46,9 +48,12 @@ function main() {
 
 # Productivity
 # --------------------------------------------------------------------------
+#./ingredients/productivity/cht.sh #cht.sh is a command line cheatsheet that provides TLDR for tons of things
 #./ingredients/productivity/flameshot.sh #Flameshot (screenshot application)
 #./ingredients/productivity/obsidian.sh #Excellent markdown based note manager and "second brain"
 #./ingredients/productivity/obsidian-wayland.sh #Configure Obsidian to run as a native Wayland application
+#./ingredients/productivity/pdftk.sh #PDF Toolkit allows for merging, splitting, etc.
+#./ingredients/productivity/xournalpp.sh #Xournal++ PDF annotation application
 
 # Media
 # --------------------------------------------------------------------------
