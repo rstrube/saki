@@ -61,7 +61,6 @@ fi
 
 echo "msr" | sudo tee /etc/modules-load.d/amdctl.conf
 
-echo -e "${YELLOW}Warning: to properly enable undervolting you will need to:"
-echo -e "1. Add 'msr.allow_writes=on' to GRUB_CMDLINE_LINUX in /etc/grub/default"
-echo -e "2. Run 'grub-mkconfig -o /boot/grub/grub.cfg'"
-echo -e "3. Update /usr/bin/amdctl-run.sh with the appropriate CpuVid values to perform undervolt${NC}"
+echo -e "${YELLOW}Additional Steps: To enable AMD CPU undervolting you will need to add the 'msr.allow_writes=on' kernel parameter:"
+echo -e "1. Add 'msr.allow_writes=on' kernel param to the appropriate systemd-boot entries (i.e. /boot/loader/entries/archlinux{-xxx}.conf)"
+echo -e "2. Update /usr/bin/amdctl-run.sh with the appropriate CpuVid values to perform undervolt${NC}"
