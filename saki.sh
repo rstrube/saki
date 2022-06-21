@@ -117,6 +117,7 @@ function install() {
     arch-chroot /mnt pacman -S --noconfirm --needed \
         base-devel              `# Core development libraries (gcc, etc.)` \
         linux linux-headers     `# Linux kernel and headers` \
+        iptables-nft            `# Newer firewall config with many benefits over traditional iptables` \
         fwupd                   `# Support for updating firmware from Linux Vendor Firmware Service [https://fwupd.org/]` \
         man-db man-pages        `# man pages` \
         texinfo                 `# GUN documentation format` \
