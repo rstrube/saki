@@ -9,8 +9,11 @@ source $DIR/../_helper/_common-functions.sh
 paru -S --noconfirm --needed qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat iptables-nft edk2-ovmf dmidecode
 
 # Tweak some permissions for libvirtd to allow non-root users to interact with KVM virtual machines
-sudo sed -i "s/#unix_sock_group/unix_sock_group/" "/etc/libvirt/libvirtd.conf"
-sudo sed -i "s/#unix_sock_ro_perms/unix_sock_ro_perms/" "/etc/libvirt/libvirtd.conf"
+sudo sed -i 's/#unix_sock_group/unix_sock_group/' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#unix_sock_ro_perms/unix_sock_ro_perms/' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#unix_sock_rw_perms/unix_sock_rw_perms/' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#auth_unix_ro = "polkit"/auth_unix_ro = "none"/' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#auth_unix_rw = "polkit"/auth_unix_rw = "none"/' /etc/libvirt/libvirtd.conf
 
 # Add user to the correct groups
 sudo usermod -a -G libvirt $USER
