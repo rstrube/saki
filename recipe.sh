@@ -1,5 +1,5 @@
 #!/bin/bash
-# recipe.sh : 2022-06-23-10:52:32
+# recipe.sh : 2022-06-23-11:34:07
 # NOTE: Please uncomment the ingredients you wish to install before running!
 # --------------------------------------------------------------------------
 
@@ -59,6 +59,7 @@ function main() {
 
 # Media
 # --------------------------------------------------------------------------
+#./ingredients/media/blanket.sh #Whitenoise generation application
 #./ingredients/media/codecs.sh #Codecs for Audio, Images, and Video
 #./ingredients/media/gpodder.sh #Excellent podcast manager
 #./ingredients/media/kde-gstreamer.sh #KDE Phonon with GStreamer backend + Plugins
